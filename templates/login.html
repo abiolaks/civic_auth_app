@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-4">Login with Civic</h1>
+<p>Click the button below to authenticate with Civic.</p>
+<button id="civicButton" class="btn btn-primary">Login with Civic</button>
+<script src="https://hosted-sip.civic.com/js/civic.sip.min.js"></script>
+<script>
+  var civicSip = new civic.sip({ appId: '{{ civic_app_id }}' });
+  civicSip.on('auth-code-received', function (event) {
+    var jwtToken = event.response; // encoded JWT token
+    window.location.href = '/callback?token=' + jwtToken;
+  });
+  document.getElementById('civicButton').addEventListener('click', function() {
+    civicSip.signup({ style: 'popup', scopeRequest: civicSip.ScopeRequests.BASIC_SIGNUP });
+  });
+</script>
+{% endblock %}
